@@ -4,6 +4,7 @@ from posthog.temporal.llm_analytics.run_evaluation import (
     disable_evaluation_activity,
     emit_evaluation_event_activity,
     emit_internal_telemetry_activity,
+    execute_hog_eval_activity,
     execute_llm_judge_activity,
     fetch_evaluation_activity,
     increment_trial_eval_count_activity,
@@ -36,6 +37,7 @@ EVAL_ACTIVITIES = [
     disable_evaluation_activity,
     update_key_state_activity,
     execute_llm_judge_activity,
+    execute_hog_eval_activity,
     emit_evaluation_event_activity,
     emit_internal_telemetry_activity,
 ]
@@ -68,6 +70,7 @@ ACTIVITIES = [
     disable_evaluation_activity,
     update_key_state_activity,
     execute_llm_judge_activity,
+    execute_hog_eval_activity,
     emit_evaluation_event_activity,
     emit_internal_telemetry_activity,
 ]
