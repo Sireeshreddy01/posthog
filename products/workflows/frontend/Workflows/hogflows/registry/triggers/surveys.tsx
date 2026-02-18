@@ -12,8 +12,6 @@ import { urls } from 'scenes/urls'
 
 import { SurveyEventName } from '~/types'
 
-import { FEATURE_FLAGS } from 'lib/constants'
-
 import { registerTriggerType } from 'products/workflows/frontend/Workflows/hogflows/registry/triggers/triggerTypeRegistry'
 import { workflowLogic } from 'products/workflows/frontend/Workflows/workflowLogic'
 
@@ -275,7 +273,6 @@ registerTriggerType({
     label: 'Survey response',
     icon: <IconMessage />,
     description: 'Trigger when a user submits a survey response',
-    featureFlag: FEATURE_FLAGS.WORKFLOWS_SURVEY_TRIGGERS,
     matchConfig: (config) => isSurveyTriggerConfig(config),
     buildConfig: () => ({
         type: 'event',
