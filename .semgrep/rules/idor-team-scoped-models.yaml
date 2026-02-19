@@ -149,6 +149,7 @@ rules:
                               |SharingConfiguration
                               |SignalReport
                               |SignalReportArtefact
+                              |SignalSourceConfig
                               |SingleSessionSummary
                               |Subscription
                               |Survey
@@ -308,6 +309,7 @@ rules:
                         |SharingConfiguration
                         |SignalReport
                         |SignalReportArtefact
+                        |SignalSourceConfig
                         |SingleSessionSummary
                         |Subscription
                         |Survey

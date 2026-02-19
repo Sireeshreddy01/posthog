@@ -287,9 +287,9 @@ export interface PaginatedExternalDataSchemaListApi {
  * `Postmark` - Postmark
  * `Granola` - Granola
  */
-export type SourceTypeEnumApi = (typeof SourceTypeEnumApi)[keyof typeof SourceTypeEnumApi]
+export type SourceType1d0EnumApi = (typeof SourceType1d0EnumApi)[keyof typeof SourceType1d0EnumApi]
 
-export const SourceTypeEnumApi = {
+export const SourceType1d0EnumApi = {
     Ashby: 'Ashby',
     Supabase: 'Supabase',
     CustomerIO: 'CustomerIO',
@@ -447,7 +447,7 @@ export interface ExternalDataSourceSerializersApi {
     readonly status: string
     client_secret: string
     account_id: string
-    readonly source_type: SourceTypeEnumApi
+    readonly source_type: SourceType1d0EnumApi
     readonly latest_error: string
     /** @nullable */
     readonly prefix: string | null
@@ -487,7 +487,7 @@ export interface PatchedExternalDataSourceSerializersApi {
     readonly status?: string
     client_secret?: string
     account_id?: string
-    readonly source_type?: SourceTypeEnumApi
+    readonly source_type?: SourceType1d0EnumApi
     readonly latest_error?: string
     /** @nullable */
     readonly prefix?: string | null
@@ -819,7 +819,7 @@ export interface SimpleExternalDataSourceSerializersApi {
     /** @nullable */
     readonly created_by: number | null
     readonly status: string
-    readonly source_type: SourceTypeEnumApi
+    readonly source_type: SourceType1d0EnumApi
 }
 
 export interface TableApi {
