@@ -56,3 +56,9 @@ class SignalData:
     weight: float
     timestamp: str
     extra: dict = field(default_factory=dict)
+
+
+@dataclass
+class InitialClusteringTriggerInputs:
+    team_id: int
+    signal_source_config_id: str

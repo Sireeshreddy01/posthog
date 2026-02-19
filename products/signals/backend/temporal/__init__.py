@@ -10,12 +10,18 @@ from products.signals.backend.temporal.activities import (
     mark_report_ready_activity,
     run_signal_semantic_search_activity,
     summarize_signals_activity,
+    update_clustering_status_activity,
 )
-from products.signals.backend.temporal.workflow import EmitSignalWorkflow, SignalResearchWorkflow
+from products.signals.backend.temporal.workflow import (
+    EmitSignalWorkflow,
+    InitialClusteringTriggerWorkflow,
+    SignalResearchWorkflow,
+)
 
 WORKFLOWS = [
     EmitSignalWorkflow,
     SignalResearchWorkflow,
+    InitialClusteringTriggerWorkflow,
 ]
 
 ACTIVITIES = [
@@ -30,4 +36,5 @@ ACTIVITIES = [
     mark_report_ready_activity,
     run_signal_semantic_search_activity,
     summarize_signals_activity,
+    update_clustering_status_activity,
 ]
