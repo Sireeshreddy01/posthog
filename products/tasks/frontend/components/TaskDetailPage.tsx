@@ -1,9 +1,11 @@
 import { useActions, useValues } from 'kea'
+import { useEffect, useRef, useState } from 'react'
 
-import { IconArchive, IconExternal, IconGithub, IconPlay } from '@posthog/icons'
+import { IconArchive, IconChevronDown, IconExternal, IconGithub, IconPlay } from '@posthog/icons'
 import { LemonButton, Spinner } from '@posthog/lemon-ui'
 
 import { dayjs } from 'lib/dayjs'
+import { LemonMarkdown } from 'lib/lemon-ui/LemonMarkdown'
 import { ButtonPrimitive } from 'lib/ui/Button/ButtonPrimitives'
 import { urls } from 'scenes/urls'
 
@@ -19,6 +21,56 @@ import { SceneTitleSection } from '~/layout/scenes/components/SceneTitleSection'
 import { taskDetailSceneLogic } from '../logics/taskDetailSceneLogic'
 import { TaskRunItem } from './TaskRunItem'
 import { TaskSessionView } from './TaskSessionView'
+
+const COLLAPSED_MAX_HEIGHT = 120
+
+function CollapsibleDescription({ description }: { description: string }): JSX.Element {
+    const [isExpanded, setIsExpanded] = useState(false)
+    const [isOverflowing, setIsOverflowing] = useState(false)
+    const contentRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const el = contentRef.current
+        if (el) {
+            setIsOverflowing(el.scrollHeight > COLLAPSED_MAX_HEIGHT)
+        }
+    }, [description])
+
+    return (
+        <div className="relative -mt-2 mb-2 px-2">
+            <div
+                ref={contentRef}
+                className="relative overflow-hidden transition-all"
+                style={!isExpanded && isOverflowing ? { maxHeight: COLLAPSED_MAX_HEIGHT } : undefined}
+            >
+                <LemonMarkdown lowKeyHeadings className="text-sm">
+                    {description}
+                </LemonMarkdown>
+                {!isExpanded && isOverflowing && (
+                    <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
+                        // eslint-disable-next-line react/forbid-dom-props
+                        style={{ background: 'linear-gradient(transparent, var(--bg-light))' }}
+                    />
+                )}
+            </div>
+            {isOverflowing && (
+                <button
+                    type="button"
+                    onClick={() => setIsExpanded((prev) => !prev)}
+                    className="mt-1 flex items-center gap-1 text-xs text-muted hover:text-default cursor-pointer"
+                >
+                    <IconChevronDown
+                        className="transition-transform"
+                        // eslint-disable-next-line react/forbid-dom-props
+                        style={isExpanded ? { transform: 'rotate(180deg)' } : undefined}
+                    />
+                    {isExpanded ? 'Show less' : 'Show more'}
+                </button>
+            )}
+        </div>
+    )
+}
 
 export interface TaskDetailPageProps {
     taskId: string
@@ -98,7 +150,7 @@ export function TaskDetailPage({ taskId }: TaskDetailPageProps): JSX.Element {
 
             <SceneTitleSection
                 name={task?.title}
-                description={task?.description}
+                description={null}
                 resourceType={{ type: 'task' }}
                 isLoading={false}
                 canEdit={false}
@@ -135,6 +187,8 @@ export function TaskDetailPage({ taskId }: TaskDetailPageProps): JSX.Element {
                     </div>
                 }
             />
+
+            {task.description && <CollapsibleDescription description={task.description} />}
 
             {runsLoading ? (
                 <div className="flex items-center justify-center h-32">

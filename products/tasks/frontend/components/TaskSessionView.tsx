@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { TextMorph } from 'torph/react'
 
-import { IconCopy } from '@posthog/icons'
+import { IconChevronDown, IconCopy } from '@posthog/icons'
 import { LemonButton, Spinner } from '@posthog/lemon-ui'
 
 import { lemonToast } from 'lib/lemon-ui/LemonToast/LemonToast'
@@ -56,6 +56,60 @@ interface TaskSessionViewProps {
     run: TaskRun | null
 }
 
+const USER_MSG_COLLAPSED_HEIGHT = 120
+
+function UserLogEntry({ message, timestamp }: { message: string; timestamp?: string }): JSX.Element {
+    const [isExpanded, setIsExpanded] = useState(false)
+    const [isOverflowing, setIsOverflowing] = useState(false)
+    const contentRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const el = contentRef.current
+        if (el) {
+            setIsOverflowing(el.scrollHeight > USER_MSG_COLLAPSED_HEIGHT)
+        }
+    }, [message])
+
+    return (
+        <div className="py-2 flex flex-col items-end">
+            <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-medium">User</span>
+                {timestamp && <span className="text-xs text-muted">{new Date(timestamp).toLocaleTimeString()}</span>}
+            </div>
+            <div className="border-r-2 border-muted pr-3 max-w-[90%] text-right">
+                <div
+                    ref={contentRef}
+                    className="relative overflow-hidden text-sm whitespace-pre-wrap"
+                    style={!isExpanded && isOverflowing ? { maxHeight: USER_MSG_COLLAPSED_HEIGHT } : undefined}
+                >
+                    {message}
+                    {!isExpanded && isOverflowing && (
+                        <div
+                            className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
+                            // eslint-disable-next-line react/forbid-dom-props
+                            style={{ background: 'linear-gradient(transparent, var(--bg-3000))' }}
+                        />
+                    )}
+                </div>
+                {isOverflowing && (
+                    <button
+                        type="button"
+                        onClick={() => setIsExpanded((prev) => !prev)}
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-muted hover:text-default cursor-pointer"
+                    >
+                        <IconChevronDown
+                            className="transition-transform"
+                            // eslint-disable-next-line react/forbid-dom-props
+                            style={isExpanded ? { transform: 'rotate(180deg)' } : undefined}
+                        />
+                        {isExpanded ? 'Show less' : 'Show more'}
+                    </button>
+                )}
+            </div>
+        </div>
+    )
+}
+
 function LogEntryRenderer({ entry }: { entry: LogEntry }): JSX.Element | null {
     switch (entry.type) {
         case 'console':
@@ -77,19 +131,7 @@ function LogEntryRenderer({ entry }: { entry: LogEntry }): JSX.Element | null {
                 />
             )
         case 'user':
-            return (
-                <div className="py-2 flex flex-col items-end">
-                    <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-medium">User</span>
-                        {entry.timestamp && (
-                            <span className="text-xs text-muted">{new Date(entry.timestamp).toLocaleTimeString()}</span>
-                        )}
-                    </div>
-                    <div className="border-r-2 border-muted pr-3 max-w-[90%] text-right">
-                        <div className="text-sm whitespace-pre-wrap">{entry.message}</div>
-                    </div>
-                </div>
-            )
+            return <UserLogEntry message={entry.message || ''} timestamp={entry.timestamp} />
         case 'agent':
             return (
                 <div className="py-2">
